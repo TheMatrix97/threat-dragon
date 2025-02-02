@@ -10,7 +10,8 @@ on:
 env:
   # threatdragon is the working area on docker hub so use this area
   # owasp/threat-dragon is the final release area so DO NOT use that
-  IMAGE_NAME: threatdragon/owasp-threat-dragon
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 # for security reasons the github actions are pinned to specific release versions
 jobs:
@@ -121,7 +122,7 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
         
@@ -129,7 +130,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ghcr.io/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       # platform manifests not (yet) supported, so split out architectures
       - name: Build for amd64 and push to Docker Hub
